@@ -8,6 +8,8 @@ using cyclus::Bid;
 using cyclus::Request;
 using cyclus::PrefMap;
 
+namespace kitlus {
+
 void BuyPolicy::Init(cyclus::ResourceBuff* buf, std::string commod,
                      cyclus::Composition::Ptr c, double pref) {
   buf_ = buf;
@@ -56,3 +58,5 @@ void BuyPolicy::AdjustMatlPrefs(PrefMap<Material>::type& prefs) {
     }
   }
 }
+
+} // namespace kitlus

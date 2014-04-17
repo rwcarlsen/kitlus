@@ -4,6 +4,8 @@
 #include <string>
 #include "cyclus.h"
 
+namespace kitlus {
+
 class SellPolicy : public cyclus::Trader {
  public:
   SellPolicy(cyclus::Agent* manager) : Trader(manager) {};
@@ -25,5 +27,7 @@ class SellPolicy : public cyclus::Trader {
   cyclus::ResourceBuff* buf_;
   std::string commod_;
 };
+
+} // namespace kitlus
 
 #endif

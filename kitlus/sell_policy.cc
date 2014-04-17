@@ -7,6 +7,8 @@ using cyclus::Request;
 using cyclus::Trade;
 using cyclus::Manifest;
 
+namespace kitlus {
+
 void SellPolicy::Init(cyclus::ResourceBuff* buf, std::string commod) {
   buf_ = buf;
   commod_ = commod;
@@ -60,3 +62,4 @@ void SellPolicy::GetMatlTrades(
   }
 }
 
+} // namespace kitlus
