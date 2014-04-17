@@ -6,9 +6,9 @@ endif
 ifeq ($(strip $(PREFIX)),)
 	PREFIX = $(HOME)/.local
 endif
-$(info prefix=$(PREFIX))
 
 ##### dependency config #####
+includes += -I..
 includes += $(CYCLUS_ROOT:%=-I%/include/cyclus)
 includes += $(shell pkg-config --cflags sqlite3)
 includes += $(shell pkg-config --cflags cbc)
