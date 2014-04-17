@@ -1,5 +1,5 @@
-#ifndef SELL_POLICY_H_
-#define SELL_POLICY_H_
+#ifndef KITLUS_SELL_POLICY_H_
+#define KITLUS_SELL_POLICY_H_
 
 #include <string>
 #include "cyclus.h"
