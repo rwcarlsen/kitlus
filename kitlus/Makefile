@@ -22,7 +22,7 @@ headers = $(wildcard *.h)
 source = $(wildcard *.cc)
 objs = $(source:%.cc=%.o)
 
-libname = libkitlus
+libname = libkitlus.so
 postfix = kitlus
 prefix = $(DESTDIR)/$(PREFIX)
 ifeq ($(strip $(DESTDIR)),)
@@ -30,13 +30,13 @@ ifeq ($(strip $(DESTDIR)),)
 endif
 
 ##### primary targets #####
-build: $(libname).so
+build: $(libname)
 
 debug: CXXFLAGS += -g
-debug: $(libname).so
+debug: $(libname)
 
 release: CXXFLAGS += -O3
-release: $(libname).so
+release: $(libname)
 
 install: release
 	@mkdir -p $(prefix)/lib
@@ -44,7 +44,7 @@ install: release
 	cp $(libname) $(prefix)/lib/
 	cp $(headers) $(prefix)/include/$(postfix)/
 
-$(libname).so : $(objs)
+$(libname) : $(objs)
 	@echo "CXX -shared -fpic -rdynamic $(CXXFLAGS) $(CPPFLAGS) $(libs) $(objs) -o $@"
 	@$(CXX) -shared -fpic -rdynamic $(CXXFLAGS) $(CPPFLAGS) $(libs) $^ -o $@
 
