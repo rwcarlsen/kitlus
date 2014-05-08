@@ -10,10 +10,10 @@ endif
 ##### dependency config #####
 includes += -I..
 includes += $(CYCLUS_ROOT:%=-I%/include/cyclus)
-includes += $(shell PKG_CONFIG_PATH=$$HOME/.local pkg-config --cflags sqlite3)
-includes += $(shell PKG_CONFIG_PATH=$$HOME/.local pkg-config --cflags cbc)
-includes += $(shell PKG_CONFIG_PATH=$$HOME/.local pkg-config --cflags libxml-2.0)
-includes += $(shell PKG_CONFIG_PATH=$$HOME/.local pkg-config --cflags libxml++-2.6)
+includes += $(shell export PKG_CONFIG_PATH="$(HOME)/.local/lib/pkgconfig"; pkg-config --cflags sqlite3)
+includes += $(shell export PKG_CONFIG_PATH="$(HOME)/.local/lib/pkgconfig"; pkg-config --cflags cbc)
+includes += $(shell export PKG_CONFIG_PATH="$(HOME)/.local/lib/pkgconfig"; pkg-config --cflags libxml-2.0)
+includes += $(shell export PKG_CONFIG_PATH="$(HOME)/.local/lib/pkgconfig"; pkg-config --cflags libxml++-2.6)
 libs += $(CYCLUS_ROOT:%=-L%/lib)
 libs += -lcycluscore
 
