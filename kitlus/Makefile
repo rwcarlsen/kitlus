@@ -1,7 +1,7 @@
 
 ##### set default var values #####
 ifeq ($(strip $(CYCLUS_ROOT)),)
-	CYCLUS_ROOT = $(HOME)/.local $(HOME)/cyc/install
+	CYCLUS_ROOT = $(HOME)/.local $(HOME)/cyc/install /usr/local /usr
 endif
 ifeq ($(strip $(PREFIX)),)
 	PREFIX = $(HOME)/.local
