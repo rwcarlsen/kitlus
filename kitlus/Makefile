@@ -15,7 +15,7 @@ includes += $(shell export PKG_CONFIG_PATH="$(HOME)/.local/lib/pkgconfig"; pkg-c
 includes += $(shell export PKG_CONFIG_PATH="$(HOME)/.local/lib/pkgconfig"; pkg-config --cflags libxml-2.0)
 includes += $(shell export PKG_CONFIG_PATH="$(HOME)/.local/lib/pkgconfig"; pkg-config --cflags libxml++-2.6)
 libs += $(CYCLUS_ROOT:%=-L%/lib)
-libs += -lcycluscore
+libs += -lcyclus
 
 $(info includes: $(includes))
 

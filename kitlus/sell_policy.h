@@ -10,7 +10,7 @@ class SellPolicy : public cyclus::Trader {
  public:
   SellPolicy(cyclus::Agent* manager) : Trader(manager) {};
 
-  void Init(cyclus::ResourceBuff* buf, std::string commod);
+  void Init(cyclus::toolkit::ResourceBuff* buf, std::string commod);
 
   virtual ~SellPolicy() {};
 
@@ -24,7 +24,7 @@ class SellPolicy : public cyclus::Trader {
     cyclus::Material::Ptr> >& responses);
 
  private:
-  cyclus::ResourceBuff* buf_;
+  cyclus::toolkit::ResourceBuff* buf_;
   std::string commod_;
 };
 

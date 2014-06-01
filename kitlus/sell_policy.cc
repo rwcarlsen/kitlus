@@ -5,11 +5,11 @@ using cyclus::CapacityConstraint;
 using cyclus::Material;
 using cyclus::Request;
 using cyclus::Trade;
-using cyclus::Manifest;
+using cyclus::toolkit::Manifest;
 
 namespace kitlus {
 
-void SellPolicy::Init(cyclus::ResourceBuff* buf, std::string commod) {
+void SellPolicy::Init(cyclus::toolkit::ResourceBuff* buf, std::string commod) {
   buf_ = buf;
   commod_ = commod;
 }
@@ -27,12 +27,12 @@ SellPolicy::GetMatlBids(
 
   BidPortfolio<Material>::Ptr port(new BidPortfolio<Material>());
 
-  const std::vector<Request<Material>::Ptr>& requests = commod_requests.at(
+  const std::vector<Request<Material>*>& requests = commod_requests.at(
                                                           commod_);
 
-  std::vector<Request<Material>::Ptr>::const_iterator it;
+  std::vector<Request<Material>*>::const_iterator it;
   for (it = requests.begin(); it != requests.end(); ++it) {
-    const Request<Material>::Ptr req = *it;
+    Request<Material>* req = *it;
     double qty = std::min(req->target()->quantity(), buf_->capacity());
     Material::Ptr m = buf_->Pop<Material>();
     buf_->Push(m);

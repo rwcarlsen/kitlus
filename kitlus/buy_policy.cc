@@ -10,7 +10,7 @@ using cyclus::PrefMap;
 
 namespace kitlus {
 
-void BuyPolicy::Init(cyclus::ResourceBuff* buf, std::string commod,
+void BuyPolicy::Init(cyclus::toolkit::ResourceBuff* buf, std::string commod,
                      cyclus::Composition::Ptr c, double pref) {
   buf_ = buf;
   comp_ = c;
@@ -49,11 +49,11 @@ void BuyPolicy::AcceptMatlTrades(
 void BuyPolicy::AdjustMatlPrefs(PrefMap<Material>::type& prefs) {
   PrefMap<Material>::type::iterator it;
   for (it = prefs.begin(); it != prefs.end(); ++it) {
-    Request<Material>::Ptr r = it->first;
-    std::map<Bid<Material>::Ptr, double>::iterator it2;
-    std::map<Bid<Material>::Ptr, double> bids = it->second;
+    Request<Material>* r = it->first;
+    std::map<Bid<Material>*, double>::iterator it2;
+    std::map<Bid<Material>*, double> bids = it->second;
     for (it2 = bids.begin(); it2 != bids.end(); ++it2) {
-      Bid<Material>::Ptr b = it2->first;
+      Bid<Material>* b = it2->first;
       prefs[r][b] = pref_;
     }
   }
