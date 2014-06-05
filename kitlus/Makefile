@@ -17,8 +17,6 @@ includes += $(shell export PKG_CONFIG_PATH="$(HOME)/.local/lib/pkgconfig"; pkg-c
 libs += $(CYCLUS_ROOT:%=-L%/lib)
 libs += -lcyclus
 
-$(info includes: $(includes))
-
 ##### variable setup #####
 headers = $(wildcard *.h)
 source = $(wildcard *.cc)
