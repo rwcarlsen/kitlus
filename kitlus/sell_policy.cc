@@ -15,9 +15,7 @@ void SellPolicy::Init(cyclus::toolkit::ResourceBuff* buf, std::string commod) {
 }
 
 std::set<BidPortfolio<Material>::Ptr>
-SellPolicy::GetMatlBids(
-    const cyclus::CommodMap<Material>::type& commod_requests) {
-
+SellPolicy::GetMatlBids(cyclus::CommodMap<Material>::type& commod_requests) {
   std::set<BidPortfolio<Material>::Ptr> ports;
   if (buf_->empty()) {
     return ports;
