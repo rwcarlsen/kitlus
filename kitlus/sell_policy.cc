@@ -7,7 +7,10 @@ using cyclus::Request;
 using cyclus::Trade;
 using cyclus::toolkit::Manifest;
 
+#define LG(X) LOG(cyclus::LEV_##X, "kitlus")
+
 namespace kitlus {
+
 
 void SellPolicy::Init(cyclus::toolkit::ResourceBuff* buf, std::string commod) {
   buf_ = buf;
@@ -19,9 +22,11 @@ SellPolicy::GetMatlBids(cyclus::CommodMap<Material>::type& commod_requests) {
   std::set<BidPortfolio<Material>::Ptr> ports;
   if (buf_->empty()) {
     return ports;
+  } else if (buf_->quantity() < cyclus::eps()) {
+    return ports;
   } else if (commod_requests.count(commod_) < 1) {
     return ports;
-  }
+  } 
 
   BidPortfolio<Material>::Ptr port(new BidPortfolio<Material>());
 
@@ -38,6 +43,8 @@ SellPolicy::GetMatlBids(cyclus::CommodMap<Material>::type& commod_requests) {
     port->AddBid(req, offer, this);
   }
 
+  LG(INFO5) << "SellPolicy for " << manager()->prototype() << ":" << manager()->id() << " offers " << buf_->quantity() << " kg of commod " << commod_;
+
   CapacityConstraint<Material> cc(buf_->quantity());
   port->AddConstraint(cc);
   ports.insert(port);
@@ -52,6 +59,7 @@ void SellPolicy::GetMatlTrades(
   std::vector< Trade<Material> >::const_iterator it;
   for (it = trades.begin(); it != trades.end(); ++it) {
     double qty = it->amt;
+    LG(INFO5) << "SellPolicy for " << manager()->prototype() << ":" << manager()->id() << " filling order of " << qty << " kg";
     std::vector<Material::Ptr> man = cyclus::ResCast<Material>(buf_->PopQty(qty));
     for (int i = 1; i < man.size(); ++i) {
       man[0]->Absorb(man[i]);

@@ -16,10 +16,13 @@ includes += $(shell export PKG_CONFIG_PATH="$(HOME)/.local/lib/pkgconfig"; pkg-c
 includes += $(shell export PKG_CONFIG_PATH="$(HOME)/.local/lib/pkgconfig"; pkg-config --cflags libxml++-2.6)
 libs += $(CYCLUS_ROOT:%=-L%/lib)
 libs += -lcyclus
+libs += -lboost_system
+libs += -lhdf5
+libs += -lhdf5_hl
 
 ##### variable setup #####
 headers = $(wildcard *.h)
-source = $(wildcard *.cc)
+source = $(filter-out %_test.cc,$(wildcard *.cc))
 objs = $(source:%.cc=%.o)
 
 libname = libkitlus.so

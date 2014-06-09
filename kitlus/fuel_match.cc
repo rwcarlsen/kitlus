@@ -5,6 +5,8 @@ namespace kitlus {
 
 using pyne::simple_xs;
 
+#define LG(X) LOG(cyclus::LEV_##X, "kitlus")
+
 double CosiWeight(cyclus::Composition::Ptr c) {
   cyclus::CompMap cm = c->mass();
   cyclus::compmath::Normalize(&cm);
@@ -45,6 +47,11 @@ double CosiFissileFrac(cyclus::Composition::Ptr target,
   double w_fill = CosiWeight(filler);
   double w_fiss = CosiWeight(fissile);
   double w_tgt = CosiWeight(target);
+
+  LG(INFO4) << "w_fill=" << w_fill;
+  LG(INFO4) << "w_tgt=" << w_tgt;
+  LG(INFO4) << "w_fiss=" << w_fiss;
+
   return (w_tgt - w_fill) / (w_fiss - w_fill);
 }
 
