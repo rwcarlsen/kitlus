@@ -60,7 +60,7 @@ void SellPolicy::GetMatlTrades(
   for (it = trades.begin(); it != trades.end(); ++it) {
     double qty = it->amt;
     LG(INFO5) << "SellPolicy for " << manager()->prototype() << ":" << manager()->id() << " filling order of " << qty << " kg";
-    std::vector<Material::Ptr> man = cyclus::ResCast<Material>(buf_->PopQty(qty));
+    std::vector<Material::Ptr> man = cyclus::ResCast<Material>(buf_->PopQty(qty, buf_->quantity() * 1e-14));
     for (int i = 1; i < man.size(); ++i) {
       man[0]->Absorb(man[i]);
     }
