@@ -10,8 +10,13 @@ soname = lib$(libname).so
 postfix = $(libname)
 
 ifeq ($(strip $(CYCLUS_ROOT)),)
-	CYCLUS_ROOT = $(HOME)/.local $(HOME)/cyc/install /usr/local /usr
+ifneq ($(strip $(shell which cyclus)),)
+CYCLUS_ROOT = $(strip $(shell cyclus --install-path))
+else
+CYCLUS_ROOT = $(HOME)/.local
 endif
+endif
+
 ifeq ($(strip $(PREFIX)),)
 	PREFIX = $(HOME)/.local
 endif
