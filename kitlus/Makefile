@@ -1,10 +1,24 @@
 
-##### set default var values #####
+##### variable setup #####
+libname = kitlus
+headers = $(wildcard *.h)
+source = $(filter-out %_test.cc,$(wildcard *.cc))
+
+##### get default var vals and calc other vars #####
+objs = $(source:%.cc=%.o)
+soname = lib$(libname).so
+postfix = $(libname)
+
 ifeq ($(strip $(CYCLUS_ROOT)),)
 	CYCLUS_ROOT = $(HOME)/.local $(HOME)/cyc/install /usr/local /usr
 endif
 ifeq ($(strip $(PREFIX)),)
 	PREFIX = $(HOME)/.local
+endif
+
+prefix = $(DESTDIR)/$(PREFIX)
+ifeq ($(strip $(DESTDIR)),)
+	prefix = $(PREFIX)
 endif
 
 ##### dependency config #####
@@ -16,38 +30,23 @@ includes += $(shell export PKG_CONFIG_PATH="$(HOME)/.local/lib/pkgconfig"; pkg-c
 includes += $(shell export PKG_CONFIG_PATH="$(HOME)/.local/lib/pkgconfig"; pkg-config --cflags libxml++-2.6)
 libs += $(CYCLUS_ROOT:%=-L%/lib)
 libs += -lcyclus
-libs += -lboost_system
-libs += -lhdf5
-libs += -lhdf5_hl
-
-##### variable setup #####
-headers = $(wildcard *.h)
-source = $(filter-out %_test.cc,$(wildcard *.cc))
-objs = $(source:%.cc=%.o)
-
-libname = libkitlus.so
-postfix = kitlus
-prefix = $(DESTDIR)/$(PREFIX)
-ifeq ($(strip $(DESTDIR)),)
-	prefix = $(PREFIX)
-endif
 
 ##### primary targets #####
-build: $(libname)
+build: $(soname)
 
 debug: CXXFLAGS += -g
-debug: $(libname)
+debug: $(soname)
 
 release: CXXFLAGS += -O3
-release: $(libname)
+release: $(soname)
 
 install: release
 	@mkdir -p $(prefix)/lib
 	@mkdir -p $(prefix)/include/$(postfix)
-	cp $(libname) $(prefix)/lib/
+	cp $(soname) $(prefix)/lib/
 	cp $(headers) $(prefix)/include/$(postfix)/
 
-$(libname) : $(objs)
+$(soname) : $(objs)
 	@echo "CXX -shared -fpic -rdynamic $(CXXFLAGS) $(CPPFLAGS) $(libs) $(objs) -o $@"
 	@$(CXX) -shared -fpic -rdynamic $(CXXFLAGS) $(CPPFLAGS) $(libs) $^ -o $@
 
