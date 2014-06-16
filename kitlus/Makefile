@@ -26,6 +26,8 @@ ifeq ($(strip $(DESTDIR)),)
 	prefix = $(PREFIX)
 endif
 
+LDFLAGS +="-Wl,-rpath,$(CYCLUS_ROOT)/lib,-rpath,$(HOME)/.local/lib"
+
 ##### dependency config #####
 includes += -I..
 includes += $(CYCLUS_ROOT:%=-I%/include/cyclus)
@@ -53,7 +55,7 @@ install: release
 
 $(soname) : $(objs)
 	@echo "CXX -shared -fpic -rdynamic $(CXXFLAGS) $(CPPFLAGS) $(libs) $(objs) -o $@"
-	@$(CXX) -shared -fpic -rdynamic $(CXXFLAGS) $(CPPFLAGS) $(libs) $^ -o $@
+	@$(CXX) -shared -fpic -rdynamic $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $(libs) $^ -o $@
 
 clean:
 	rm -f *.o *.d *.so
