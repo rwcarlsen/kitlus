@@ -2,8 +2,10 @@
 Kitlus
 ==============
 
-The kitlus library (in the `kitlus` subdirectory) must be installed before the
-agents can be built and installed:
+To get started quick, run the `./install.sh` script.  For building yourself,
+the kitlus library (in the `kitlus` subdirectory) must be installed before the
+agents in the `agents` subdirectory can be built and installed.  The process
+goes something like this:
 
 ```bash
 cd kitlus
