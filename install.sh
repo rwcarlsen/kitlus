@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ "$1" == "clean" ]; then
+    cd kitlus
+    make clean
+    cd ../agents
+    make clean
+fi
+
 cd kitlus
 make -j install
 
