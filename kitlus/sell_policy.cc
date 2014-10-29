@@ -8,13 +8,19 @@ using cyclus::Trade;
 using cyclus::toolkit::Manifest;
 
 #define LG(X) LOG(cyclus::LEV_##X, "kitlus")
+#define LGH(X) LOG(cyclus::LEV_##X, "kitlus") << "policy " << name_ << " (agent " << manager()->id() << "): "
 
 namespace kitlus {
 
-
-void SellPolicy::Init(cyclus::toolkit::ResourceBuff* buf, std::string commod) {
+SellPolicy& SellPolicy::Init(cyclus::toolkit::ResourceBuff* buf, std::string name) {
   buf_ = buf;
-  commod_ = commod;
+  name_ = name;
+  return *this;
+}
+
+SellPolicy& SellPolicy::Set(std::string commod) {
+  commods_.insert(commod);
+  return *this;
 }
 
 std::set<BidPortfolio<Material>::Ptr>
@@ -24,26 +30,33 @@ SellPolicy::GetMatlBids(cyclus::CommodMap<Material>::type& commod_requests) {
     return ports;
   } else if (buf_->quantity() < cyclus::eps()) {
     return ports;
-  } else if (commod_requests.count(commod_) < 1) {
-    return ports;
-  } 
-
+  }
+  
   BidPortfolio<Material>::Ptr port(new BidPortfolio<Material>());
 
-  const std::vector<Request<Material>*>& requests = commod_requests.at(
-                                                          commod_);
+  LGH(INFO2) << "bidding out " << buf_->quantity() << " kg";
 
-  std::vector<Request<Material>*>::const_iterator it;
-  for (it = requests.begin(); it != requests.end(); ++it) {
-    Request<Material>* req = *it;
-    double qty = std::min(req->target()->quantity(), buf_->capacity());
-    Material::Ptr m = buf_->Pop<Material>();
-    buf_->Push(m);
-    Material::Ptr offer = Material::CreateUntracked(qty, m->comp());
-    port->AddBid(req, offer, this);
+  std::set<std::string>::iterator it;
+  for (it = commods_.begin(); it != commods_.end(); ++it) {
+    std::string commod = *it;
+    if (commod_requests.count(commod) < 1) {
+      continue;
+    } 
+
+    const std::vector<Request<Material>*>& requests = commod_requests.at(
+                                                            commod);
+
+    std::vector<Request<Material>*>::const_iterator it;
+    for (it = requests.begin(); it != requests.end(); ++it) {
+      Request<Material>* req = *it;
+      double qty = std::min(req->target()->quantity(), buf_->capacity());
+      Material::Ptr m = buf_->Pop<Material>();
+      buf_->Push(m);
+      Material::Ptr offer = Material::CreateUntracked(qty, m->comp());
+      port->AddBid(req, offer, this);
+      LG(INFO3) << "  - bid on one " << qty << " kg request for " << commod;
+    }
   }
-
-  LG(INFO5) << "SellPolicy for " << manager()->prototype() << ":" << manager()->id() << " offers " << buf_->quantity() << " kg of commod " << commod_;
 
   CapacityConstraint<Material> cc(buf_->quantity());
   port->AddConstraint(cc);
@@ -59,7 +72,7 @@ void SellPolicy::GetMatlTrades(
   std::vector< Trade<Material> >::const_iterator it;
   for (it = trades.begin(); it != trades.end(); ++it) {
     double qty = it->amt;
-    LG(INFO5) << "SellPolicy for " << manager()->prototype() << ":" << manager()->id() << " filling order of " << qty << " kg";
+    LGH(INFO5) << " sending " << qty << " kg of " << it->request->commodity();
     std::vector<Material::Ptr> man = cyclus::ResCast<Material>(buf_->PopQty(qty, buf_->quantity() * 1e-12));
     for (int i = 1; i < man.size(); ++i) {
       man[0]->Absorb(man[i]);

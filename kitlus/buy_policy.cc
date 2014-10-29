@@ -13,18 +13,24 @@ using cyclus::PrefMap;
 
 namespace kitlus {
 
-void BuyPolicy::Init(cyclus::toolkit::ResourceBuff* buf, std::string name, double quantize) {
+BuyPolicy& BuyPolicy::Init(cyclus::toolkit::ResourceBuff* buf, std::string name, double quantize) {
   buf_ = buf;
   quantize_ = quantize;
   name_ = name;
+  return *this;
 }
 
-void BuyPolicy::Set(std::string commod, cyclus::Composition::Ptr c, double pref) {
+BuyPolicy& BuyPolicy::Set(std::string commod, cyclus::Composition::Ptr c, double pref) {
   CommodDetail d;
   d.comp = c;
   d.pref = pref;
   commods_[commod] = d;
+  return *this;
 }
+
+std::map<cyclus::Material::Ptr, std::string> BuyPolicy::Commods() {
+  return rsrc_commod_;
+};
 
 std::set<RequestPortfolio<Material>::Ptr>
 BuyPolicy::GetMatlRequests() {

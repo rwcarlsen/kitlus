@@ -9,52 +9,54 @@ using cyclus::ResCast;
 
 RecipeMixer::RecipeMixer(cyclus::Context* ctx)
   : cyclus::Facility(ctx),
-    inbuf1_size_(0),
-    inbuf2_size_(0),
-    outbuf_size_(0),
+    fill_size_(0),
+    fiss_size_(0),
+    out_size_(0),
     throughput_(0),
-    inpolicy1_(this),
-    inpolicy2_(this),
+    fillpolicy_(this),
+    fisspolicy_(this),
     outpolicy_(this) {}
 
 void RecipeMixer::EnterNotify() {
   cyclus::Facility::EnterNotify();
 
-  outpolicy_.Init(&outbuf_, outcommod_);
-  inpolicy1_.Init(&inbuf1_, incommod1_, context()->GetRecipe(inrecipe1_));
-  inpolicy2_.Init(&inbuf2_, incommod2_, context()->GetRecipe(inrecipe2_));
+  outpolicy_.Init(&out_, "outbuf").Set(outcommod_);
+  fillpolicy_.Init(&fill_, "filler")
+             .Set(fill_commod_, context()->GetRecipe(fill_recipe_));
+  fisspolicy_.Init(&fiss_, "fissile")
+             .Set(fiss_commod_, context()->GetRecipe(fiss_recipe_));
 
   context()->RegisterTrader(&outpolicy_);
-  context()->RegisterTrader(&inpolicy1_);
-  context()->RegisterTrader(&inpolicy2_);
+  context()->RegisterTrader(&fillpolicy_);
+  context()->RegisterTrader(&fisspolicy_);
 }
 
 void RecipeMixer::Decommission() {
   context()->UnregisterTrader(&outpolicy_);
-  context()->UnregisterTrader(&inpolicy1_);
-  context()->UnregisterTrader(&inpolicy2_);
+  context()->UnregisterTrader(&fillpolicy_);
+  context()->UnregisterTrader(&fisspolicy_);
   cyclus::Facility::Decommission();
 }
 
 void RecipeMixer::Tick() {
   LG(INFO3) << "RecipeMixer id=" << id() << " is ticking";
-  LG(INFO4) << "inbuf1 quantity = " << inbuf1_.quantity();
-  LG(INFO4) << "inbuf2 quantity = " << inbuf2_.quantity();
-  LG(INFO4) << "outbuf quantity = " << outbuf_.quantity();
-  double qty = std::min(throughput_, outbuf_.space());
-  if (inbuf1_.quantity() < cyclus::eps() || inbuf2_.quantity() < cyclus::eps() || qty < cyclus::eps()) {
+  LG(INFO4) << "filler quantity = " << fill_.quantity();
+  LG(INFO4) << "fissile quantity = " << fiss_.quantity();
+  LG(INFO4) << "outbuf quantity = " << out_.quantity();
+  double qty = std::min(throughput_, out_.space());
+  if (fill_.quantity() < cyclus::eps() || fiss_.quantity() < cyclus::eps() || qty < cyclus::eps()) {
     return;
   }
 
   // combine inbuf resources to single mats for querying
   std::vector<Material::Ptr> mats;
-  mats = ResCast<Material>(inbuf1_.PopN(inbuf1_.count()));
+  mats = ResCast<Material>(fill_.PopN(fill_.count()));
   Material::Ptr m1 = mats[0];
   for (int i = 1; i < mats.size(); ++i) {
     m1->Absorb(mats[i]);
   }
 
-  mats = ResCast<Material>(inbuf2_.PopN(inbuf2_.count()));
+  mats = ResCast<Material>(fiss_.PopN(fiss_.count()));
   Material::Ptr m2 = mats[0];
   for (int i = 1; i < mats.size(); ++i) {
     m2->Absorb(mats[i]);
@@ -65,16 +67,16 @@ void RecipeMixer::Tick() {
   double frac2 = kitlus::CosiFissileFrac(tgt, m1->comp(), m2->comp());
   double frac1 = 1 - frac2;
   if (frac2 < 0) {
-    inbuf1_.Push(m1);
-    inbuf2_.Push(m2);
-    LG(ERROR) << "fissile stream has too low reactivity";
+    fill_.Push(m1);
+    fiss_.Push(m2);
+    LG(ERROR) << "fiss stream has too low reactivity";
     return;
   }
 
-  LG(INFO4) << "filler frac = " << frac1;
-  LG(INFO4) << "fissile frac = " << frac2;
+  LG(INFO4) << "fill frac = " << frac1;
+  LG(INFO4) << "fiss frac = " << frac2;
 
-  // deal with stream quantity and outbuf space constraints
+  // deal with stream quantity and out buf space constraints
   double qty1 = frac1 * qty;
   double qty2 = frac2 * qty;
   double qty1diff = m1->quantity() - qty1;
@@ -82,14 +84,14 @@ void RecipeMixer::Tick() {
   if (qty1diff >= 0 && qty2diff >= 0) {
     // not constrained by inbuf quantities
   } else if (qty1diff < qty2diff ) {
-    // constrained by inbuf1
-    LG(INFO5) << "Constrained by incommod '" << incommod1_
+    // constrained by fiss_
+    LG(INFO5) << "Constrained by incommod '" << fill_commod_
               << "' - reducing qty from " << qty
               << " to " << m1->quantity() / frac1;
     qty = m1->quantity() / frac1;
   } else {
     // constrained by inbuf2
-    LG(INFO5) << "Constrained by incommod '" << incommod2_
+    LG(INFO5) << "Constrained by incommod '" << fiss_commod_
               << "' - reducing qty from " << qty
               << " to " << m2->quantity() / frac2;
     qty = m2->quantity() / frac2;
@@ -104,12 +106,12 @@ void RecipeMixer::Tick() {
   LG(INFO5) << " u235 = " << mq.mass_frac(922350000);
   LG(INFO5) << "Pu239 = " << mq.mass_frac(942390000);
 
-  outbuf_.Push(mix);
+  out_.Push(mix);
   if (m1->quantity() > 0) {
-    inbuf1_.Push(m1);
+    fill_.Push(m1);
   }
   if (m2->quantity() > 0) {
-    inbuf2_.Push(m2);
+    fiss_.Push(m2);
   }
 }
 

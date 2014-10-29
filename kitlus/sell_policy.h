@@ -10,7 +10,9 @@ class SellPolicy : public cyclus::Trader {
  public:
   SellPolicy(cyclus::Agent* manager) : Trader(manager) {};
 
-  void Init(cyclus::toolkit::ResourceBuff* buf, std::string commod);
+  SellPolicy& Init(cyclus::toolkit::ResourceBuff* buf, std::string name);
+
+  SellPolicy& Set(std::string commod);
 
   virtual ~SellPolicy() {};
 
@@ -25,7 +27,8 @@ class SellPolicy : public cyclus::Trader {
 
  private:
   cyclus::toolkit::ResourceBuff* buf_;
-  std::string commod_;
+  std::set<std::string> commods_;
+  std::string name_;
 };
 
 } // namespace kitlus

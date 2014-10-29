@@ -27,38 +27,38 @@ class RecipeMixer : public cyclus::Facility {
 
  private:
   #pragma cyclus var {}
-  std::string incommod1_;
+  std::string fill_commod_;
   #pragma cyclus var {}
-  std::string inrecipe1_;
+  std::string fill_recipe_;
   #pragma cyclus var {}
-  double inbuf1_size_;
-  #pragma cyclus var {'capacity': 'inbuf1_size_'}
-  cyclus::toolkit::ResourceBuff inbuf1_;
+  double fill_size_;
+  #pragma cyclus var {'capacity': 'fill_size_'}
+  cyclus::toolkit::ResourceBuff fill_;
 
   #pragma cyclus var {}
-  std::string incommod2_;
+  std::string fiss_commod_;
   #pragma cyclus var {}
-  std::string inrecipe2_;
+  std::string fiss_recipe_;
   #pragma cyclus var {}
-  double inbuf2_size_;
-  #pragma cyclus var {'capacity': 'inbuf2_size_'}
-  cyclus::toolkit::ResourceBuff inbuf2_;
+  double fiss_size_;
+  #pragma cyclus var {'capacity': 'fiss_size_'}
+  cyclus::toolkit::ResourceBuff fiss_;
 
   #pragma cyclus var {}
   std::string outcommod_;
   #pragma cyclus var {}
   std::string outrecipe_;
   #pragma cyclus var {}
-  double outbuf_size_;
-  #pragma cyclus var {'capacity': 'outbuf_size_'}
-  cyclus::toolkit::ResourceBuff outbuf_;
+  double out_size_;
+  #pragma cyclus var {'capacity': 'out_size_'}
+  cyclus::toolkit::ResourceBuff out_;
 
   #pragma cyclus var {}
   double throughput_;
 
   SellPolicy outpolicy_;
-  BuyPolicy inpolicy1_;
-  BuyPolicy inpolicy2_;
+  BuyPolicy fillpolicy_;
+  BuyPolicy fisspolicy_;
 };
 
 #endif  // RECIPE_MIXER_H_

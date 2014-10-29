@@ -21,9 +21,10 @@ RecipeExtractor::RecipeExtractor(cyclus::Context* ctx)
 void RecipeExtractor::EnterNotify() {
   cyclus::Facility::EnterNotify();
 
-  outpolicy_.Init(&outbuf_, outcommod_);
-  wastepolicy_.Init(&wastebuf_, wastecommod_);
-  inpolicy_.Init(&inbuf_, incommod_, context()->GetRecipe(inrecipe_), inpref_);
+  outpolicy_.Init(&outbuf_, "output").Set(outcommod_);
+  wastepolicy_.Init(&wastebuf_, "waste").Set(wastecommod_);
+  inpolicy_.Init(&inbuf_, "inventory")
+           .Set(incommod_, context()->GetRecipe(inrecipe_), inpref_);
 
   context()->RegisterTrader(&outpolicy_);
   context()->RegisterTrader(&wastepolicy_);
