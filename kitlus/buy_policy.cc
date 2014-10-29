@@ -10,12 +10,13 @@ using cyclus::PrefMap;
 
 namespace kitlus {
 
-void BuyPolicy::Init(cyclus::toolkit::ResourceBuff* buf, std::string commod,
-                     cyclus::Composition::Ptr c, double pref) {
-  buf_ = buf;
-  comp_ = c;
-  commod_ = commod;
-  pref_ = pref;
+void BuyPolicy::Init(cyclus::toolkit::ResourceBuff* buf) : buf_(buf){ }
+
+void BuyPolicy::AddCommod(std::string commod, cyclus::Composition::Ptr c, double pref = 0.0) {
+  CommodDetail d;
+  d.comp = c;
+  d.pref = pref;
+  commods_[commod] = d;
 }
 
 std::set<RequestPortfolio<Material>::Ptr>
@@ -27,8 +28,13 @@ BuyPolicy::GetMatlRequests() {
   }
 
   RequestPortfolio<Material>::Ptr port(new RequestPortfolio<Material>());
-  Material::Ptr m = Material::CreateUntracked(amt, comp_);
-  port->AddRequest(m, this, commod_);
+  std::map<std::string, CommodDetail>::iterator it;
+  for (it = commods_.begin(); it != commods_.end(); ++it) {
+    std::string commod = it->first;
+    CommodDetail d = it->second;
+    Material::Ptr m = Material::CreateUntracked(amt, d.comp);
+    port->AddRequest(m, this, commod);
+  }
 
   ports.insert(port);
   CapacityConstraint<Material> cc(amt);
@@ -50,6 +56,7 @@ void BuyPolicy::AdjustMatlPrefs(PrefMap<Material>::type& prefs) {
   PrefMap<Material>::type::iterator it;
   for (it = prefs.begin(); it != prefs.end(); ++it) {
     Request<Material>* r = it->first;
+    commods_[r->commodity()]
     std::map<Bid<Material>*, double>::iterator it2;
     std::map<Bid<Material>*, double> bids = it->second;
     for (it2 = bids.begin(); it2 != bids.end(); ++it2) {

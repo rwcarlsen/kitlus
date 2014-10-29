@@ -12,8 +12,8 @@ class BuyPolicy : public cyclus::Trader {
 
   virtual ~BuyPolicy() {};
 
-  void Init(cyclus::toolkit::ResourceBuff* buf, std::string commod,
-            cyclus::Composition::Ptr c, double pref = 0.0);
+  void Init(cyclus::toolkit::ResourceBuff* buf)
+  void AddCommod(std::string commod, cyclus::Composition::Ptr c, double pref = 0.0);
 
   std::set<cyclus::RequestPortfolio<cyclus::Material>::Ptr>
   GetMatlRequests();
@@ -25,10 +25,14 @@ class BuyPolicy : public cyclus::Trader {
   virtual void AdjustMatlPrefs(cyclus::PrefMap<cyclus::Material>::type& prefs);
 
  private:
+  struct CommodDetail {
+    cyclus::Composition::Ptr comp;
+    double pref;
+  }
+
   cyclus::toolkit::ResourceBuff* buf_;
-  cyclus::Composition::Ptr comp_;
-  std::string commod_;
-  double pref_;
+
+  std::map<std::string, CommodDetail> commods_;
 };
 
 } // namespace kitlus
