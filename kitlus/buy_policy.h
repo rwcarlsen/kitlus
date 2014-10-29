@@ -16,7 +16,7 @@ class BuyPolicy : public cyclus::Trader {
   /// quantize is greater than zero, the policy will make exclusive, integral
   /// quantize kg requests.  Otherwise, single requests will be sent to
   /// fill the buffer's empty space.
-  void Init(cyclus::toolkit::ResourceBuff* buf, double quantize = -1);
+  void Init(cyclus::toolkit::ResourceBuff* buf, std::string name, double quantize = -1);
 
   /// Set configures the policy to fill its buffer with requests on the given
   /// commodity of composition c and the given preference.  This must be called
@@ -48,6 +48,8 @@ class BuyPolicy : public cyclus::Trader {
   };
 
   double quantize_;
+
+  std::string name_;
 
   std::map<cyclus::Material::Ptr, std::string> rsrc_commod_;
 
