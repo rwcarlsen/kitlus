@@ -62,6 +62,8 @@ BuyPolicy::GetMatlRequests() {
     }
   }
 
+  // TODO: this doesn't work - we need a (currently unimplemented) LT
+  // constraint. RequestPortfolio->AddConstraint is for GT constraints
   CapacityConstraint<Material> cc(amt);
   port->AddConstraint(cc);
   ports.insert(port);
