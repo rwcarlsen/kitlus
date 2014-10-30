@@ -52,20 +52,22 @@ BuyPolicy::GetMatlRequests() {
 
   RequestPortfolio<Material>::Ptr port(new RequestPortfolio<Material>());
   std::map<std::string, CommodDetail>::iterator it;
+
+  std::map<int, std::vector<Request<Material>*> > grps;
   for (it = commods_.begin(); it != commods_.end(); ++it) {
     std::string commod = it->first;
     CommodDetail d = it->second;
     for (int i = 0; i < amt / quanta; i++) {
       LG(INFO3) << "  - one " << amt << " kg request of " << commod;
       Material::Ptr m = Material::CreateUntracked(quanta, d.comp);
-      port->AddRequest(m, this, commod, exclusive);
+      grps[i].push_back(port->AddRequest(m, this, commod, exclusive));
     }
   }
 
-  // TODO: this doesn't work - we need a (currently unimplemented) LT
-  // constraint. RequestPortfolio->AddConstraint is for GT constraints
-  CapacityConstraint<Material> cc(amt);
-  port->AddConstraint(cc);
+  std::map<int, std::vector<Request<Material>*> >::iterator grpit;
+  for (grpit = grps.begin(); grpit != grps.end(); ++grpit) {
+    port->AddMutualReqs(grpit->second);
+  }
   ports.insert(port);
 
   return ports;
