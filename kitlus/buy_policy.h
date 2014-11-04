@@ -6,6 +6,43 @@
 
 namespace kitlus {
 
+/// BuyPolicy performs semi-automatic inventory management of a material
+/// buffer by making requests and accepting materials in an attempt to fill the
+/// buffer fully every time step.  Typical usage involves a few things.  In
+/// your agent constructor:
+///
+/// @code
+/// class YourAgent : public cyclus::Facility {
+///  public:
+///   YourAgent(cyclus::Context* ctx) : policy_(this) {...};
+///   ...
+///   
+///   void EnterNotify() {
+///     cyclus::Facility::EnterNotify();
+///
+///     policy_.Init(&inbuf_, "inbuf").Set(incommod);
+///     context()->RegisterTrader(&policy_);
+///   }
+///
+///   void Decommission() {
+///     context()->UnregisterTrader(&policy_);
+///
+///     cyclus::Facility::Decommission();
+///   }
+///   ...
+///   private:
+///    BuyPolicy policy_;
+///    ResourceBuff inbuf_;
+///    ...
+/// }
+///
+/// @endcode
+///
+/// The policy needs to be initialized with its owning agent in the agent's
+/// constructor.  It needs to be initialized with the material buffer that is
+/// is managing and registered as a Trader in the agent's EnterNotify function.
+/// And it also needs to be unregistered as a trader in the agent's
+/// Decommission function.
 class BuyPolicy : public cyclus::Trader {
  public:
   BuyPolicy(cyclus::Agent* manager) : cyclus::Trader(manager) {};
@@ -25,7 +62,7 @@ class BuyPolicy : public cyclus::Trader {
   /// or preference of a commodity that has previously been set is allowed.
   BuyPolicy& Set(std::string commod, cyclus::Composition::Ptr c, double pref = 0.0);
 
-  /// Commods returns resources and their respective commodities that were
+  /// Commods returns materials and their respective commodities that were
   /// received on the current time step. The data returned by this function
   /// are ONLY valid during the Tock phase of a time step.
   std::map<cyclus::Material::Ptr, std::string> Commods();
