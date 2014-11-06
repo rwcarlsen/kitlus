@@ -9,15 +9,17 @@ using cyclus::Request;
 using cyclus::PrefMap;
 
 #define LG(X) LOG(cyclus::LEV_##X, "kitlus")
-#define LGH(X) LOG(cyclus::LEV_##X, "kitlus") << "policy " << name_ << " (agent " << manager()->id() << "): "
+#define LGH(X)                                                       \
+  LOG(cyclus::LEV_##X, "kitlus") << "policy " << name_ << " (agent " \
+                                 << manager()->id() << "): "
 
 namespace kitlus {
 
-BuyPolicy::~BuyPolicy() {
-  manager()->context()->UnregisterTrader(this);
-}
+BuyPolicy::~BuyPolicy() { manager()->context()->UnregisterTrader(this); }
 
-BuyPolicy& BuyPolicy::Init(cyclus::Agent* manager, cyclus::toolkit::ResourceBuff* buf, std::string name, double quantize) {
+BuyPolicy& BuyPolicy::Init(cyclus::Agent* manager,
+                           cyclus::toolkit::ResourceBuff* buf, std::string name,
+                           double quantize) {
   manager_ = manager;
   buf_ = buf;
   quantize_ = quantize;
@@ -25,7 +27,8 @@ BuyPolicy& BuyPolicy::Init(cyclus::Agent* manager, cyclus::toolkit::ResourceBuff
   return *this;
 }
 
-BuyPolicy& BuyPolicy::Set(std::string commod, cyclus::Composition::Ptr c, double pref) {
+BuyPolicy& BuyPolicy::Set(std::string commod, cyclus::Composition::Ptr c,
+                          double pref) {
   CommodDetail d;
   d.comp = c;
   d.pref = pref;
@@ -37,8 +40,7 @@ std::map<cyclus::Material::Ptr, std::string> BuyPolicy::Commods() {
   return rsrc_commod_;
 };
 
-std::set<RequestPortfolio<Material>::Ptr>
-BuyPolicy::GetMatlRequests() {
+std::set<RequestPortfolio<Material>::Ptr> BuyPolicy::GetMatlRequests() {
   rsrc_commod_.clear();
   std::set<RequestPortfolio<Material>::Ptr> ports;
   double amt = buf_->space();
@@ -79,9 +81,8 @@ BuyPolicy::GetMatlRequests() {
 }
 
 void BuyPolicy::AcceptMatlTrades(
-  const std::vector< std::pair<Trade<Material>,
-  Material::Ptr> >& resps) {
-  std::vector< std::pair<Trade<Material>, Material::Ptr> >::const_iterator it;
+    const std::vector<std::pair<Trade<Material>, Material::Ptr> >& resps) {
+  std::vector<std::pair<Trade<Material>, Material::Ptr> >::const_iterator it;
   rsrc_commod_.clear();
   for (it = resps.begin(); it != resps.end(); ++it) {
     rsrc_commod_[it->second] = it->first.request->commodity();
@@ -96,8 +97,8 @@ void BuyPolicy::AdjustMatlPrefs(PrefMap<Material>::type& prefs) {
   for (it = prefs.begin(); it != prefs.end(); ++it) {
     Request<Material>* r = it->first;
     double pref = commods_[r->commodity()].pref;
-    LGH(INFO4) << "setting prefs for " << r->target()->quantity() << " kg bid for "
-               << r->commodity() << " to " << pref;
+    LGH(INFO4) << "setting prefs for " << r->target()->quantity()
+               << " kg bid for " << r->commodity() << " to " << pref;
     std::map<Bid<Material>*, double>::iterator it2;
     std::map<Bid<Material>*, double> bids = it->second;
     for (it2 = bids.begin(); it2 != bids.end(); ++it2) {
@@ -107,5 +108,4 @@ void BuyPolicy::AdjustMatlPrefs(PrefMap<Material>::type& prefs) {
   }
 }
 
-
-} // namespace kitlus
+}  // namespace kitlus
