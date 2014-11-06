@@ -13,6 +13,10 @@ using cyclus::PrefMap;
 
 namespace kitlus {
 
+BuyPolicy::~BuyPolicy() {
+  manager()->context()->UnregisterTrader(this);
+}
+
 BuyPolicy& BuyPolicy::Init(cyclus::toolkit::ResourceBuff* buf, std::string name, double quantize) {
   buf_ = buf;
   quantize_ = quantize;

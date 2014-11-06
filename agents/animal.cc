@@ -35,8 +35,6 @@ void Animal::Build(cyclus::Agent* parent) {
 }
 
 void Animal::Decommission() {
-  context()->UnregisterTrader(&outpolicy_);
-  context()->UnregisterTrader(&inpolicy_);
   alive_["in_" + incommod_] -= 1;
   alive_["out_" + outcommod_] -= 1;
 

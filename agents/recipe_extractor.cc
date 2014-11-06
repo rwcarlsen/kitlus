@@ -31,13 +31,6 @@ void RecipeExtractor::EnterNotify() {
   context()->RegisterTrader(&inpolicy_);
 }
 
-void RecipeExtractor::Decommission() {
-  context()->UnregisterTrader(&outpolicy_);
-  context()->UnregisterTrader(&wastepolicy_);
-  context()->UnregisterTrader(&inpolicy_);
-  cyclus::Facility::Decommission();
-}
-
 void RecipeExtractor::Tick() {
   if (inbuf_.count() == 0) {
     return;

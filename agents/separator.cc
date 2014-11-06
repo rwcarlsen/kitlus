@@ -35,13 +35,6 @@ void Separator::EnterNotify() {
   context()->RegisterTrader(&inpolicy_);
 }
 
-void Separator::Decommission() {
-  context()->UnregisterTrader(&outpolicy_);
-  context()->UnregisterTrader(&wastepolicy_);
-  context()->UnregisterTrader(&inpolicy_);
-  cyclus::Facility::Decommission();
-}
-
 void Separator::Tick() {
   LG(INFO3) << "Separator id=" << id() << " is ticking";
   LG(INFO4) << "inbuf quantity = " << std::setprecision(17) << inbuf_.quantity();

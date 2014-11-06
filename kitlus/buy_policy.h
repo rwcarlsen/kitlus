@@ -47,7 +47,7 @@ class BuyPolicy : public cyclus::Trader {
  public:
   BuyPolicy(cyclus::Agent* manager) : cyclus::Trader(manager) {};
 
-  virtual ~BuyPolicy() {};
+  virtual ~BuyPolicy();
 
   /// Init configures the policy to keep buf full every time step.  If
   /// quantize is greater than zero, the policy will make exclusive, integral

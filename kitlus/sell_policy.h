@@ -14,7 +14,7 @@ class SellPolicy : public cyclus::Trader {
 
   SellPolicy& Set(std::string commod);
 
-  virtual ~SellPolicy() {};
+  virtual ~SellPolicy();
 
   virtual std::set<cyclus::BidPortfolio<cyclus::Material>::Ptr>
   GetMatlBids(cyclus::CommodMap<cyclus::Material>::type&

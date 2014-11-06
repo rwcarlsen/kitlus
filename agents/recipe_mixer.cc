@@ -31,13 +31,6 @@ void RecipeMixer::EnterNotify() {
   context()->RegisterTrader(&fisspolicy_);
 }
 
-void RecipeMixer::Decommission() {
-  context()->UnregisterTrader(&outpolicy_);
-  context()->UnregisterTrader(&fillpolicy_);
-  context()->UnregisterTrader(&fisspolicy_);
-  cyclus::Facility::Decommission();
-}
-
 void RecipeMixer::Tick() {
   LG(INFO3) << "RecipeMixer id=" << id() << " is ticking";
   LG(INFO4) << "filler quantity = " << fill_.quantity();

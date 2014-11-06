@@ -12,6 +12,10 @@ using cyclus::toolkit::Manifest;
 
 namespace kitlus {
 
+SellPolicy::~SellPolicy() {
+  manager()->context()->UnregisterTrader(this);
+}
+
 SellPolicy& SellPolicy::Init(cyclus::toolkit::ResourceBuff* buf, std::string name) {
   buf_ = buf;
   name_ = name;
