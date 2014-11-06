@@ -16,7 +16,8 @@ SellPolicy::~SellPolicy() {
   manager()->context()->UnregisterTrader(this);
 }
 
-SellPolicy& SellPolicy::Init(cyclus::toolkit::ResourceBuff* buf, std::string name) {
+SellPolicy& SellPolicy::Init(cyclus::Agent* manager, cyclus::toolkit::ResourceBuff* buf, std::string name) {
+  manager_ = manager;
   buf_ = buf;
   name_ = name;
   return *this;

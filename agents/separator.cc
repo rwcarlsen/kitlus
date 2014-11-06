@@ -17,17 +17,14 @@ Separator::Separator(cyclus::Context* ctx)
       inpref_(0),
       outbuf_size_(0),
       wastebuf_size_(0),
-      throughput_(0),
-      inpolicy_(this),
-      outpolicy_(this),
-      wastepolicy_(this) {}
+      throughput_(0) {}
 
 void Separator::EnterNotify() {
   cyclus::Facility::EnterNotify();
 
-  outpolicy_.Init(&outbuf_, "outbuf").Set(outcommod_);
-  wastepolicy_.Init(&wastebuf_, "waste").Set(wastecommod_);
-  inpolicy_.Init(&inbuf_, "inbuf")
+  outpolicy_.Init(this, &outbuf_, "outbuf").Set(outcommod_);
+  wastepolicy_.Init(this, &wastebuf_, "waste").Set(wastecommod_);
+  inpolicy_.Init(this, &inbuf_, "inbuf")
            .Set(incommod_, context()->GetRecipe(inrecipe_), inpref_);
 
   context()->RegisterTrader(&outpolicy_);

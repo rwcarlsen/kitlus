@@ -15,14 +15,12 @@ Animal::Animal(cyclus::Context* ctx)
     birth_freq_(0),
     lifespan_(0),
     capture_ratio_(0),
-    for_sale_(0),
-    inpolicy_(this),
-    outpolicy_(this) { }
+    for_sale_(0) { }
 
 void Animal::EnterNotify() {
   cyclus::Facility::EnterNotify();
-  outpolicy_.Init(&outbuf_, "outbuf").Set(outcommod_);
-  inpolicy_.Init(&inbuf_, "inbuf")
+  outpolicy_.Init(this, &outbuf_, "outbuf").Set(outcommod_);
+  inpolicy_.Init(this, &inbuf_, "inbuf")
            .Set(incommod_, context()->GetRecipe(inrecipe_));
   context()->RegisterTrader(&outpolicy_);
   context()->RegisterTrader(&inpolicy_);

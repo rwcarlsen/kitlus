@@ -8,28 +8,21 @@ namespace kitlus {
 
 /// BuyPolicy performs semi-automatic inventory management of a material
 /// buffer by making requests and accepting materials in an attempt to fill the
-/// buffer fully every time step.  Typical usage involves a few things.  In
-/// your agent constructor:
+/// buffer fully every time step.  Typical usage goes something like this:
 ///
 /// @code
 /// class YourAgent : public cyclus::Facility {
 ///  public:
-///   YourAgent(cyclus::Context* ctx) : policy_(this) {...};
 ///   ...
 ///   
 ///   void EnterNotify() {
 ///     cyclus::Facility::EnterNotify();
 ///
-///     policy_.Init(&inbuf_, "inbuf").Set(incommod);
+///     policy_.Init(this, &inbuf_, "inbuf").Set(incommod, comp);
 ///     context()->RegisterTrader(&policy_);
 ///   }
-///
-///   void Decommission() {
-///     context()->UnregisterTrader(&policy_);
-///
-///     cyclus::Facility::Decommission();
-///   }
 ///   ...
+///
 ///   private:
 ///    BuyPolicy policy_;
 ///    ResourceBuff inbuf_;
@@ -38,14 +31,13 @@ namespace kitlus {
 ///
 /// @endcode
 ///
-/// The policy needs to be initialized with its owning agent in the agent's
-/// constructor.  It needs to be initialized with the material buffer that is
-/// is managing and registered as a Trader in the agent's EnterNotify function.
-/// And it also needs to be unregistered as a trader in the agent's
-/// Decommission function.
+/// The policy needs to be initialized with its owning agent and the material
+/// buffer that is is managing. It also needs to be registered as a Trader in
+/// the agent's EnterNotify function.  And don't forget to add some commodities
+/// to request.
 class BuyPolicy : public cyclus::Trader {
  public:
-  BuyPolicy(cyclus::Agent* manager) : cyclus::Trader(manager) {};
+  BuyPolicy() : cyclus::Trader(NULL) {};
 
   virtual ~BuyPolicy();
 
@@ -53,7 +45,7 @@ class BuyPolicy : public cyclus::Trader {
   /// quantize is greater than zero, the policy will make exclusive, integral
   /// quantize kg requests.  Otherwise, single requests will be sent to
   /// fill the buffer's empty space.
-  BuyPolicy& Init(cyclus::toolkit::ResourceBuff* buf, std::string name, double quantize = -1);
+  BuyPolicy& Init(cyclus::Agent* manager, cyclus::toolkit::ResourceBuff* buf, std::string name, double quantize = -1);
 
   /// Set configures the policy to fill its buffer with requests on the given
   /// commodity of composition c and the given preference.  This must be called

@@ -1,6 +1,6 @@
 
 src = $(filter-out %.gen.cc,$(wildcard *.cc))
-$(info "src: $(src)")
+$(info src: $(src))
 libname=librwc.so
 
 ##### set default var vals #####

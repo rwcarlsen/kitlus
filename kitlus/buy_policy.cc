@@ -17,7 +17,8 @@ BuyPolicy::~BuyPolicy() {
   manager()->context()->UnregisterTrader(this);
 }
 
-BuyPolicy& BuyPolicy::Init(cyclus::toolkit::ResourceBuff* buf, std::string name, double quantize) {
+BuyPolicy& BuyPolicy::Init(cyclus::Agent* manager, cyclus::toolkit::ResourceBuff* buf, std::string name, double quantize) {
+  manager_ = manager;
   buf_ = buf;
   quantize_ = quantize;
   name_ = name;

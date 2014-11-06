@@ -12,18 +12,15 @@ RecipeMixer::RecipeMixer(cyclus::Context* ctx)
     fill_size_(0),
     fiss_size_(0),
     out_size_(0),
-    throughput_(0),
-    fillpolicy_(this),
-    fisspolicy_(this),
-    outpolicy_(this) {}
+    throughput_(0) {}
 
 void RecipeMixer::EnterNotify() {
   cyclus::Facility::EnterNotify();
 
-  outpolicy_.Init(&out_, "outbuf").Set(outcommod_);
-  fillpolicy_.Init(&fill_, "filler")
+  outpolicy_.Init(this, &out_, "outbuf").Set(outcommod_);
+  fillpolicy_.Init(this, &fill_, "filler")
              .Set(fill_commod_, context()->GetRecipe(fill_recipe_));
-  fisspolicy_.Init(&fiss_, "fissile")
+  fisspolicy_.Init(this, &fiss_, "fissile")
              .Set(fiss_commod_, context()->GetRecipe(fiss_recipe_));
 
   context()->RegisterTrader(&outpolicy_);

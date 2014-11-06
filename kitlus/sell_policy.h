@@ -8,9 +8,9 @@ namespace kitlus {
 
 class SellPolicy : public cyclus::Trader {
  public:
-  SellPolicy(cyclus::Agent* manager) : Trader(manager) {};
+  SellPolicy() : cyclus::Trader(NULL) {};
 
-  SellPolicy& Init(cyclus::toolkit::ResourceBuff* buf, std::string name);
+  SellPolicy& Init(cyclus::Agent* manager, cyclus::toolkit::ResourceBuff* buf, std::string name);
 
   SellPolicy& Set(std::string commod);
 
