@@ -11,7 +11,7 @@ class SellPolicy : public cyclus::Trader {
   SellPolicy() : cyclus::Trader(NULL){};
 
   SellPolicy& Init(cyclus::Agent* manager, cyclus::toolkit::ResourceBuff* buf,
-                   std::string name);
+                   std::string name, double quantize = -1);
 
   SellPolicy& Set(std::string commod);
 
@@ -28,6 +28,7 @@ class SellPolicy : public cyclus::Trader {
  private:
   cyclus::toolkit::ResourceBuff* buf_;
   std::set<std::string> commods_;
+  double quantize_;
   std::string name_;
 };
 

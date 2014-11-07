@@ -5,21 +5,20 @@ using cyclus::CapacityConstraint;
 using cyclus::Material;
 using cyclus::Request;
 using cyclus::Trade;
-using cyclus::toolkit::Manifest;
 
 #define LG(X) LOG(cyclus::LEV_##X, "kitlus")
 #define LGH(X)                                                       \
   LOG(cyclus::LEV_##X, "kitlus") << "policy " << name_ << " (agent " \
                                  << manager()->id() << "): "
-
 namespace kitlus {
 
 SellPolicy::~SellPolicy() { manager()->context()->UnregisterTrader(this); }
 
 SellPolicy& SellPolicy::Init(cyclus::Agent* manager,
                              cyclus::toolkit::ResourceBuff* buf,
-                             std::string name) {
+                             std::string name, double quantize) {
   manager_ = manager;
+  quantize_ = quantize;
   buf_ = buf;
   name_ = name;
   return *this;
@@ -43,6 +42,11 @@ std::set<BidPortfolio<Material>::Ptr> SellPolicy::GetMatlBids(
 
   LGH(INFO2) << "bidding out " << buf_->quantity() << " kg";
 
+  bool exclusive = true;
+  if (quantize_ < 0) {
+    exclusive = false;
+  }
+
   std::set<std::string>::iterator it;
   for (it = commods_.begin(); it != commods_.end(); ++it) {
     std::string commod = *it;
@@ -56,12 +60,24 @@ std::set<BidPortfolio<Material>::Ptr> SellPolicy::GetMatlBids(
     std::vector<Request<Material>*>::const_iterator it;
     for (it = requests.begin(); it != requests.end(); ++it) {
       Request<Material>* req = *it;
-      double qty = std::min(req->target()->quantity(), buf_->capacity());
-      Material::Ptr m = buf_->Pop<Material>();
-      buf_->Push(m);
-      Material::Ptr offer = Material::CreateUntracked(qty, m->comp());
-      port->AddBid(req, offer, this);
-      LG(INFO3) << "  - bid on one " << qty << " kg request for " << commod;
+      double qty = req->target()->quantity();
+      qty = std::min(qty, buf_->quantity());
+
+      if (quantize_ < 0) {
+        Material::Ptr m = buf_->Pop<Material>();
+        buf_->Push(m);
+        Material::Ptr offer = Material::CreateUntracked(qty, m->comp());
+        port->AddBid(req, offer, this, exclusive);
+        LG(INFO3) << "  - bid " << qty << " kg on a request for " << commod;
+      } else {
+        for (int i = 0; i < (int)(qty / quantize_); i++) {
+          Material::Ptr m = buf_->Pop<Material>();
+          buf_->Push(m);
+          Material::Ptr offer = Material::CreateUntracked(quantize_, m->comp());
+          port->AddBid(req, offer, this, exclusive);
+          LG(INFO3) << "  - bid " << quantize_ << " kg on a request for " << commod;
+        }
+      }
     }
   }
 

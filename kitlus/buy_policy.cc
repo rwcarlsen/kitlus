@@ -1,6 +1,5 @@
 #include "buy_policy.h"
 
-using cyclus::CapacityConstraint;
 using cyclus::Material;
 using cyclus::RequestPortfolio;
 using cyclus::Trade;
