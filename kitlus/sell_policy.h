@@ -23,9 +23,9 @@ namespace kitlus {
 ///   }
 ///   ...
 ///
-///   private:
-///    SellPolicy policy_;
-///    ResourceBuff outbuf_;
+///  private:
+///   SellPolicy policy_;
+///   ResourceBuff outbuf_;
 ///    ...
 /// }
 /// @endcode

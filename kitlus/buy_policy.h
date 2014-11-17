@@ -22,9 +22,9 @@ namespace kitlus {
 ///   }
 ///   ...
 ///
-///   private:
-///    BuyPolicy policy_;
-///    ResourceBuff inbuf_;
+///  private:
+///   BuyPolicy policy_;
+///   ResourceBuff inbuf_;
 ///    ...
 /// }
 /// @endcode
