@@ -8,8 +8,11 @@ namespace kitlus {
 
 /// SellPolicy performs semi-automatic inventory management of a material
 /// buffer by making offers and trading away materials in an attempt to empty
-/// the buffer's inventory every time step.  Typical usage goes something like
-/// this:
+/// the buffer's inventory every time step.
+/// For simple behavior, policies virtually eliminate the need to write any code
+/// for resource exchange. Just assign a few policies to work with a few
+/// buffers and focus on writing the physics and other behvavior of your agent.
+/// Typical usage goes something like this:
 ///
 /// @code
 /// class YourAgent : public cyclus::Facility {
