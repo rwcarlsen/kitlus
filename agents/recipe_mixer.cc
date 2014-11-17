@@ -17,15 +17,13 @@ RecipeMixer::RecipeMixer(cyclus::Context* ctx)
 void RecipeMixer::EnterNotify() {
   cyclus::Facility::EnterNotify();
 
-  outpolicy_.Init(this, &out_, "outbuf").Set(outcommod_);
+  outpolicy_.Init(this, &out_, "outbuf").Set(outcommod_).Start();
   fillpolicy_.Init(this, &fill_, "filler")
-             .Set(fill_commod_, context()->GetRecipe(fill_recipe_));
+             .Set(fill_commod_, context()->GetRecipe(fill_recipe_))
+             .Start();
   fisspolicy_.Init(this, &fiss_, "fissile")
-             .Set(fiss_commod_, context()->GetRecipe(fiss_recipe_));
-
-  context()->RegisterTrader(&outpolicy_);
-  context()->RegisterTrader(&fillpolicy_);
-  context()->RegisterTrader(&fisspolicy_);
+             .Set(fiss_commod_, context()->GetRecipe(fiss_recipe_))
+             .Start();
 }
 
 void RecipeMixer::Tick() {

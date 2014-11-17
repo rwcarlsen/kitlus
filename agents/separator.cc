@@ -22,14 +22,11 @@ Separator::Separator(cyclus::Context* ctx)
 void Separator::EnterNotify() {
   cyclus::Facility::EnterNotify();
 
-  outpolicy_.Init(this, &outbuf_, "outbuf").Set(outcommod_);
-  wastepolicy_.Init(this, &wastebuf_, "waste").Set(wastecommod_);
+  outpolicy_.Init(this, &outbuf_, "outbuf").Set(outcommod_).Start();
+  wastepolicy_.Init(this, &wastebuf_, "waste").Set(wastecommod_).Start();
   inpolicy_.Init(this, &inbuf_, "inbuf")
-           .Set(incommod_, context()->GetRecipe(inrecipe_), inpref_);
-
-  context()->RegisterTrader(&outpolicy_);
-  context()->RegisterTrader(&wastepolicy_);
-  context()->RegisterTrader(&inpolicy_);
+           .Set(incommod_, context()->GetRecipe(inrecipe_), inpref_)
+           .Start();
 }
 
 void Separator::Tick() {

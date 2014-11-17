@@ -19,11 +19,10 @@ Animal::Animal(cyclus::Context* ctx)
 
 void Animal::EnterNotify() {
   cyclus::Facility::EnterNotify();
-  outpolicy_.Init(this, &outbuf_, "outbuf").Set(outcommod_);
+  outpolicy_.Init(this, &outbuf_, "outbuf").Set(outcommod_).Start();
   inpolicy_.Init(this, &inbuf_, "inbuf")
-           .Set(incommod_, context()->GetRecipe(inrecipe_));
-  context()->RegisterTrader(&outpolicy_);
-  context()->RegisterTrader(&inpolicy_);
+           .Set(incommod_, context()->GetRecipe(inrecipe_))
+           .Start();
 }
 
 void Animal::Build(cyclus::Agent* parent) {
