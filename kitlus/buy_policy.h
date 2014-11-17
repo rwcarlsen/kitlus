@@ -31,13 +31,13 @@ namespace kitlus {
 ///
 /// The policy needs to be initialized with its owning agent and the material
 /// buffer that is is managing. It also needs to be activated by calling the
-/// Register function for it to begin participation in resource exchange.
+/// Start function for it to begin participation in resource exchange.
 /// And don't forget to add some commodities to request by calling Set.  All
-/// this policy configuration should usually occur in the agent's EnterNotify
+/// policy configuration should usually occur in the agent's EnterNotify
 /// member function.
 class BuyPolicy : public cyclus::Trader {
  public:
-  /// Creates an uninitialized policy.  The Init function must be called before
+  /// Creates an uninitialized policy.  The Init function MUST be called before
   /// anything else is done with the policy.
   BuyPolicy() : cyclus::Trader(NULL){};
 
@@ -52,7 +52,7 @@ class BuyPolicy : public cyclus::Trader {
 
   /// Instructs the policy to fill its buffer with requests on the given
   /// commodity of composition c and the given preference.  This must be called
-  /// at least once or the policy will do nothing.  The policy can be set to
+  /// at least once or the policy will do nothing.  The policy can
   /// request on an arbitrary number of commodities by calling Set multiple
   /// times.  Re-calling Set to modify the composition
   /// or preference of a commodity that has been set previously is allowed.

@@ -29,6 +29,10 @@ SellPolicy& SellPolicy::Set(std::string commod) {
   return *this;
 }
 
+void SellPolicy::Start() { manager()->context()->RegisterTrader(this); }
+
+void SellPolicy::Stop() { manager()->context()->UnregisterTrader(this); }
+
 std::set<BidPortfolio<Material>::Ptr> SellPolicy::GetMatlBids(
     cyclus::CommodMap<Material>::type& commod_requests) {
   std::set<BidPortfolio<Material>::Ptr> ports;
