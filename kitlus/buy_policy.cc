@@ -35,6 +35,10 @@ BuyPolicy& BuyPolicy::Set(std::string commod, cyclus::Composition::Ptr c,
   return *this;
 }
 
+void BuyPolicy::Start() { manager()->context()->RegisterTrader(this); }
+
+void BuyPolicy::Stop() { manager()->context()->UnregisterTrader(this); }
+
 std::map<cyclus::Material::Ptr, std::string> BuyPolicy::Commods() {
   return rsrc_commod_;
 };
