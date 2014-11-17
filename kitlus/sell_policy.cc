@@ -12,6 +12,11 @@ using cyclus::Trade;
                                  << manager()->id() << "): "
 namespace kitlus {
 
+SellPolicy::SellPolicy() : cyclus::Trader(NULL) {
+  cyclus::Warn<cyclus::EXPERIMENTAL_WARNING>(
+      "SellPolicy is experimental and its API may be subject to change");
+}
+
 SellPolicy::~SellPolicy() { manager()->context()->UnregisterTrader(this); }
 
 SellPolicy& SellPolicy::Init(cyclus::Agent* manager,

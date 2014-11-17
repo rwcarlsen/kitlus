@@ -14,6 +14,11 @@ using cyclus::PrefMap;
 
 namespace kitlus {
 
+BuyPolicy::BuyPolicy() : cyclus::Trader(NULL) {
+  cyclus::Warn<cyclus::EXPERIMENTAL_WARNING>(
+      "BuyPolicy is experimental and its API may be subject to change");
+}
+
 BuyPolicy::~BuyPolicy() { manager()->context()->UnregisterTrader(this); }
 
 BuyPolicy& BuyPolicy::Init(cyclus::Agent* manager,

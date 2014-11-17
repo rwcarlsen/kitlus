@@ -40,7 +40,7 @@ class SellPolicy : public cyclus::Trader {
  public:
   /// Creates an uninitialized policy.  The Init function MUST be called before
   /// anything else is done with the policy.
-  SellPolicy() : cyclus::Trader(NULL){};
+  SellPolicy();
 
   virtual ~SellPolicy();
 
