@@ -39,6 +39,9 @@ namespace kitlus {
 /// And don't forget to add some commodities to request by calling Set.  All
 /// policy configuration should usually occur in the agent's EnterNotify
 /// member function.
+///
+/// @warn When a policy's managing agent is deallocated, you MUST either
+/// call the policy's Stop function or delete the policy. Otherwise SEGFAULT.
 class BuyPolicy : public cyclus::Trader {
  public:
   /// Creates an uninitialized policy.  The Init function MUST be called before

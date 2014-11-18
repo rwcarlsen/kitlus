@@ -7,9 +7,9 @@ using cyclus::Bid;
 using cyclus::Request;
 using cyclus::PrefMap;
 
-#define LG(X) LOG(cyclus::LEV_##X, "kitlus")
+#define LG(X) LOG(cyclus::LEV_##X, "buypol")
 #define LGH(X)                                                       \
-  LOG(cyclus::LEV_##X, "kitlus") << "policy " << name_ << " (agent " \
+  LOG(cyclus::LEV_##X, "buypol") << "policy " << name_ << " (agent " \
                                  << manager()->id() << "): "
 
 namespace kitlus {
@@ -63,7 +63,7 @@ std::set<RequestPortfolio<Material>::Ptr> BuyPolicy::GetMatlRequests() {
     quanta = amt;
   }
 
-  LGH(INFO2) << "requesting " << amt << " kg";
+  LGH(INFO3) << "requesting " << amt << " kg";
 
   RequestPortfolio<Material>::Ptr port(new RequestPortfolio<Material>());
   std::map<std::string, CommodDetail>::iterator it;
@@ -73,7 +73,7 @@ std::set<RequestPortfolio<Material>::Ptr> BuyPolicy::GetMatlRequests() {
     std::string commod = it->first;
     CommodDetail d = it->second;
     for (int i = 0; i < amt / quanta; i++) {
-      LG(INFO3) << "  - one " << amt << " kg request of " << commod;
+      LG(INFO4) << "  - one " << amt << " kg request of " << commod;
       Material::Ptr m = Material::CreateUntracked(quanta, d.comp);
       grps[i].push_back(port->AddRequest(m, this, commod, exclusive));
     }
@@ -94,7 +94,7 @@ void BuyPolicy::AcceptMatlTrades(
   rsrc_commod_.clear();
   for (it = resps.begin(); it != resps.end(); ++it) {
     rsrc_commod_[it->second] = it->first.request->commodity();
-    LGH(INFO2) << "got " << it->second->quantity() << " kg of "
+    LGH(INFO3) << "got " << it->second->quantity() << " kg of "
                << it->first.request->commodity();
     buf_->Push(it->second);
   }
@@ -105,7 +105,7 @@ void BuyPolicy::AdjustMatlPrefs(PrefMap<Material>::type& prefs) {
   for (it = prefs.begin(); it != prefs.end(); ++it) {
     Request<Material>* r = it->first;
     double pref = commods_[r->commodity()].pref;
-    LGH(INFO4) << "setting prefs for " << r->target()->quantity()
+    LGH(INFO5) << "setting prefs for " << r->target()->quantity()
                << " kg bid for " << r->commodity() << " to " << pref;
     std::map<Bid<Material>*, double>::iterator it2;
     std::map<Bid<Material>*, double> bids = it->second;

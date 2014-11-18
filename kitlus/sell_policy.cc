@@ -6,9 +6,9 @@ using cyclus::Material;
 using cyclus::Request;
 using cyclus::Trade;
 
-#define LG(X) LOG(cyclus::LEV_##X, "kitlus")
+#define LG(X) LOG(cyclus::LEV_##X, "selpol")
 #define LGH(X)                                                       \
-  LOG(cyclus::LEV_##X, "kitlus") << "policy " << name_ << " (agent " \
+  LOG(cyclus::LEV_##X, "selpol") << "policy " << name_ << " (agent " \
                                  << manager()->id() << "): "
 namespace kitlus {
 
@@ -49,7 +49,7 @@ std::set<BidPortfolio<Material>::Ptr> SellPolicy::GetMatlBids(
 
   BidPortfolio<Material>::Ptr port(new BidPortfolio<Material>());
 
-  LGH(INFO2) << "bidding out " << buf_->quantity() << " kg";
+  LGH(INFO3) << "bidding out " << buf_->quantity() << " kg";
 
   bool exclusive = true;
   if (quantize_ < 0) {
@@ -77,14 +77,14 @@ std::set<BidPortfolio<Material>::Ptr> SellPolicy::GetMatlBids(
         buf_->Push(m);
         Material::Ptr offer = Material::CreateUntracked(qty, m->comp());
         port->AddBid(req, offer, this, exclusive);
-        LG(INFO3) << "  - bid " << qty << " kg on a request for " << commod;
+        LG(INFO4) << "  - bid " << qty << " kg on a request for " << commod;
       } else {
         for (int i = 0; i < (int)(qty / quantize_); i++) {
           Material::Ptr m = buf_->Pop<Material>();
           buf_->Push(m);
           Material::Ptr offer = Material::CreateUntracked(quantize_, m->comp());
           port->AddBid(req, offer, this, exclusive);
-          LG(INFO3) << "  - bid " << quantize_ << " kg on a request for " << commod;
+          LG(INFO4) << "  - bid " << quantize_ << " kg on a request for " << commod;
         }
       }
     }
@@ -102,7 +102,7 @@ void SellPolicy::GetMatlTrades(
   std::vector<Trade<Material> >::const_iterator it;
   for (it = trades.begin(); it != trades.end(); ++it) {
     double qty = it->amt;
-    LGH(INFO5) << " sending " << qty << " kg of " << it->request->commodity();
+    LGH(INFO4) << " sending " << qty << " kg of " << it->request->commodity();
     std::vector<Material::Ptr> man =
         cyclus::ResCast<Material>(buf_->PopQty(qty, buf_->quantity() * 1e-12));
     for (int i = 1; i < man.size(); ++i) {
