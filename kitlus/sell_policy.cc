@@ -17,7 +17,11 @@ SellPolicy::SellPolicy() : cyclus::Trader(NULL) {
       "SellPolicy is experimental and its API may be subject to change");
 }
 
-SellPolicy::~SellPolicy() { manager()->context()->UnregisterTrader(this); }
+SellPolicy::~SellPolicy() {
+  if (manager() != NULL) {
+    manager()->context()->UnregisterTrader(this);
+  }
+}
 
 SellPolicy& SellPolicy::Init(cyclus::Agent* manager,
                              cyclus::toolkit::ResourceBuff* buf,

@@ -19,7 +19,11 @@ BuyPolicy::BuyPolicy() : cyclus::Trader(NULL) {
       "BuyPolicy is experimental and its API may be subject to change");
 }
 
-BuyPolicy::~BuyPolicy() { manager()->context()->UnregisterTrader(this); }
+BuyPolicy::~BuyPolicy() {
+  if (manager() != NULL) {
+    manager()->context()->UnregisterTrader(this);
+  }
+}
 
 BuyPolicy& BuyPolicy::Init(cyclus::Agent* manager,
                            cyclus::toolkit::ResourceBuff* buf, std::string name,
