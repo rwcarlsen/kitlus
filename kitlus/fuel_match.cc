@@ -33,8 +33,14 @@ double CosiWeight(cyclus::Composition::Ptr c) {
     } else if (nuc == 942390000) {
       nu = 2.85;
     }
-    double fiss = simple_xs(nuc, "fission", "thermal");
-    double absorb = simple_xs(nuc, "absorption", "thermal");
+
+    double fiss = 0;
+    double absorb = 0;
+    try {
+      fiss = simple_xs(nuc, "fission", "thermal");
+      absorb = simple_xs(nuc, "absorption", "thermal");
+    } catch(pyne::InvalidSimpleXS err) { }
+
     double p = nu * fiss - absorb;
     w += it->second * (p - p_u238) / (p_pu239 - p_u238);
   }
